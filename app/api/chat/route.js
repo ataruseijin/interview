@@ -3,34 +3,41 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    // 【デバッグ1】APIキーが読み込めているかチェック
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      throw new Error("【致命的エラー】APIキーが読み込めていません。VercelのEnvironment Variables設定を確認してください。");
+      throw new Error("APIキーが読み込めていません。");
     }
 
     const { message } = await req.json();
 
-    // ★ここはご自身のデータに書き換えてOKです（そのままでも動きます）
+    // ★あなたの本番用データ（ここを後でちゃんと書き換えてください）
     const RESUME_DATA = {
-      persona: "あなたは優秀なエンジニアです。デバッグを手伝ってください。"
+      name: "あなたの名前",
+      q1_background: "これまではWeb開発に従事してきました...",
+      q2_values: "大切にしたい価値観は「101点のサービス」です...",
+      q3_motivation: "御社のビジョンに共感しました...",
+      persona: "あなたは求職者のAIアバターです。丁寧かつ熱意を持って回答してください。"
     };
 
     const systemPrompt = `
-      あなたはAIアバターです。以下の設定で回答してください。
+      【役割】
       ${RESUME_DATA.persona}
+
+      【あなたの基本情報】
+      [経歴]: ${RESUME_DATA.q1_background}
+      [価値観]: ${RESUME_DATA.q2_values}
+      [志望動機]: ${RESUME_DATA.q3_motivation}
     `;
 
-    // Gemini API呼び出し
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // 【デバッグ2】モデル名を最新の軽量モデルに変更してみる（gemini-proだと不安定な場合があるため）
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // ★ここを修正！最も安定している「gemini-pro」に戻しました
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const chat = model.startChat({
       history: [
         { role: "user", parts: [{ text: systemPrompt }] },
-        { role: "model", parts: [{ text: "デバッグモードで起動しました。" }] },
+        { role: "model", parts: [{ text: "承知いたしました。面接官様の質問にお答えします。" }] },
       ],
     });
 
@@ -40,14 +47,10 @@ export async function POST(req) {
     return NextResponse.json({ text: response.text() });
 
   } catch (error) {
-    console.error("詳細エラー:", error);
-    
-    // 【デバッグ3】エラーの正体を隠さず画面に返す
-    // オブジェクトの内容も文字列化して表示
-    const errorDetails = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
-    
+    console.error("Error:", error);
+    // エラー詳細を画面に出す（デバッグ用）
     return NextResponse.json({ 
-      text: `⛔ エラーが発生しました ⛔\n\n【原因】\n${error.message}\n\n【詳細ログ】\n${errorDetails}` 
+      text: `⛔ エラーが発生しました ⛔\n${error.message}` 
     }, { status: 500 });
   }
 }
