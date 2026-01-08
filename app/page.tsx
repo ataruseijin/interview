@@ -1,21 +1,31 @@
-// app/page.js
+// app/page.tsx
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, FormEvent } from "react";
+
+// メッセージの型定義
+type Message = {
+  role: "bot" | "user";
+  text: string;
+};
 
 export default function Home() {
-  const [messages, setMessages] = useState([
+  // TypeScript用に型を指定 (<Message[]>)
+  const [messages, setMessages] = useState<Message[]>([
     { role: "bot", text: "こんにちは！私はAIアバターです。私の経歴や志望動機について、何でも聞いてください。" }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
+  
+  // ★ここがエラーの原因だった箇所（HTMLDivElementを指定して修正）
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // 自動スクロール
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = async (e) => {
+  // 送信イベントの型指定 (FormEvent)
+  const sendMessage = async (e: FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
@@ -33,14 +43,14 @@ export default function Home() {
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "bot", text: data.text }]);
     } catch (error) {
+      console.error(error);
       setMessages((prev) => [...prev, { role: "bot", text: "エラーが発生しました。" }]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // よくある質問ボタンのクリックハンドラ
-  const handleQuickAsk = (text) => {
+  const handleQuickAsk = (text: string) => {
     setInput(text);
   };
 
@@ -64,7 +74,6 @@ export default function Home() {
       </div>
 
       <div style={styles.inputArea}>
-        {/* サジェストボタン */}
         <div style={styles.suggestArea}>
           <button style={styles.suggestBtn} onClick={() => handleQuickAsk("転職理由を教えて")}>転職理由</button>
           <button style={styles.suggestBtn} onClick={() => handleQuickAsk("大切にしている価値観は？")}>価値観</button>
@@ -87,7 +96,8 @@ export default function Home() {
   );
 }
 
-const styles = {
+// スタイルの型定義 (CSSProperties)
+const styles: { [key: string]: React.CSSProperties } = {
   container: { maxWidth: "600px", margin: "0 auto", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "sans-serif", backgroundColor: "#f4f4f9" },
   header: { padding: "15px", backgroundColor: "#333", color: "#fff", textAlign: "center" },
   chatArea: { flex: 1, padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "15px" },
