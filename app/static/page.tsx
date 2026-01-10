@@ -126,4 +126,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   userBubble: { backgroundColor: "#0070f3", color: "#fff", padding: "12px 16px", borderRadius: "18px 18px 0 18px", maxWidth: "90%", lineHeight: "1.6", fontSize: "0.95rem" },
   botBubble: { backgroundColor: "#fff", color: "#333", padding: "12px 16px", borderRadius: "18px 18px 18px 0", maxWidth: "95%", boxShadow: "0 2px 5px rgba(0,0,0,0.05)", lineHeight: "1.6", fontSize: "0.95rem" },
   inputArea: { padding: "20px", backgroundColor: "#fff", borderTop: "1px solid #ddd" },
-  guide: { textAlign: "center", color: "#666", marginBottom: "10px", fontSize: "0.9
+  guide: { textAlign: "center", color: "#666", marginBottom: "10px", fontSize: "0.9rem" },
+  buttonContainer: { display: "flex", flexDirection: "column", gap: "10px" },
+  optionBtn: { padding: "12px", backgroundColor: "#fff", color: "#0070f3", border: "1px solid #0070f3", borderRadius: "8px", cursor: "pointer", fontSize: "1rem", fontWeight: "bold", transition: "0.2s" },
+};
