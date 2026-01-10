@@ -16,7 +16,7 @@ export default function StaticPage() {
 
   // ★画像の内容を一言一句変えずにHTMLテーブル化
   const ANSWERS: Record<string, string> = {
-    q1: `
+    q1: `【経験した会社の入社理由・転職理由】
       <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 500px;">
           <thead>
