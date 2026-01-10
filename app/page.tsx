@@ -5,8 +5,8 @@ export default function LandingPage() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Web選考課題 回答</h1>
-        <p style={styles.subtitle}>応募者：あなたの名前</p>
+        <h1 style={styles.title}>選考課題 回答</h1>
+        <p style={styles.subtitle}>応募者：大森　裕貴</p>
         
         <div style={styles.menu}>
           {/* 静的版へのリンク */}

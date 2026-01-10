@@ -80,7 +80,7 @@ export default function StaticPage() {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1>Interview Chatbot (Static)</h1>
+        <h1>静的回答モード</h1>
         <Link href="/" style={styles.backLink}>← TOPへ戻る</Link>
       </header>
 
