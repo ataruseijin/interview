@@ -1,114 +1,49 @@
 // app/page.tsx
-"use client";
-import { useState, useRef, useEffect, FormEvent } from "react";
+import Link from "next/link";
 
-// メッセージの型定義
-type Message = {
-  role: "bot" | "user";
-  text: string;
-};
-
-export default function Home() {
-  // TypeScript用に型を指定 (<Message[]>)
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "bot", text: "こんにちは！私はAIアバターです。私の経歴や志望動機について、何でも聞いてください。" }
-  ]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // ★ここがエラーの原因だった箇所（HTMLDivElementを指定して修正）
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // 自動スクロール
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // 送信イベントの型指定 (FormEvent)
-  const sendMessage = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMessage = input;
-    setInput("");
-    setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
-    setIsLoading(true);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
-      });
-      const data = await res.json();
-      setMessages((prev) => [...prev, { role: "bot", text: data.text }]);
-    } catch (error) {
-      console.error(error);
-      setMessages((prev) => [...prev, { role: "bot", text: "エラーが発生しました。" }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickAsk = (text: string) => {
-    setInput(text);
-  };
-
+export default function LandingPage() {
   return (
     <div style={styles.container}>
-      <header style={styles.header}>
-        <h1>AI Interview Avatar</h1>
-        <p style={{fontSize: '0.8rem', opacity: 0.8}}>Generative AI Powered</p>
-      </header>
-
-      <div style={styles.chatArea}>
-        {messages.map((msg, index) => (
-          <div key={index} style={{ ...styles.messageRow, justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
-            <div style={msg.role === "user" ? styles.userBubble : styles.botBubble}>
-              {msg.text.split("\n").map((t, i) => <div key={i}>{t}</div>)}
+      <div style={styles.card}>
+        <h1 style={styles.title}>Web選考課題 回答</h1>
+        <p style={styles.subtitle}>応募者：あなたの名前</p>
+        
+        <div style={styles.menu}>
+          {/* 静的版へのリンク */}
+          <Link href="/static" style={{ textDecoration: 'none' }}>
+            <div style={styles.primaryButton}>
+              <h2 style={styles.btnTitle}>📄 静的回答モード</h2>
+              <p style={styles.btnDesc}>
+                事前に用意した回答をチャット形式で閲覧できます。<br/>
+                <span style={{fontSize: '0.85em', opacity: 0.9}}>※回答内容を正確に確認したい方はこちら</span>
+              </p>
             </div>
-          </div>
-        ))}
-        {isLoading && <div style={styles.loading}>AIが入力中...</div>}
-        <div ref={messagesEndRef} />
-      </div>
+          </Link>
 
-      <div style={styles.inputArea}>
-        <div style={styles.suggestArea}>
-          <button style={styles.suggestBtn} onClick={() => handleQuickAsk("転職理由を教えて")}>転職理由</button>
-          <button style={styles.suggestBtn} onClick={() => handleQuickAsk("大切にしている価値観は？")}>価値観</button>
-          <button style={styles.suggestBtn} onClick={() => handleQuickAsk("なぜこの会社を志望したの？")}>志望動機</button>
+          {/* AI版へのリンク */}
+          <Link href="/ai" style={{ textDecoration: 'none' }}>
+            <div style={styles.secondaryButton}>
+              <h2 style={styles.btnTitle}>🤖 生成AIモード (Beta)</h2>
+              <p style={styles.btnDesc}>
+                生成AIを用いた対話デモです。<br/>
+                <span style={{fontSize: '0.85em', opacity: 0.9}}>※技術デモとしてご覧ください</span>
+              </p>
+            </div>
+          </Link>
         </div>
-
-        <form onSubmit={sendMessage} style={styles.form}>
-          <input
-            style={styles.input}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="自由に質問を入力してください..."
-          />
-          <button type="submit" style={styles.sendBtn} disabled={isLoading}>
-            送信
-          </button>
-        </form>
       </div>
     </div>
   );
 }
 
-// スタイルの型定義 (CSSProperties)
 const styles: { [key: string]: React.CSSProperties } = {
-  container: { maxWidth: "600px", margin: "0 auto", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "sans-serif", backgroundColor: "#f4f4f9" },
-  header: { padding: "15px", backgroundColor: "#333", color: "#fff", textAlign: "center" },
-  chatArea: { flex: 1, padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "15px" },
-  messageRow: { display: "flex" },
-  userBubble: { backgroundColor: "#0070f3", color: "#fff", padding: "10px 15px", borderRadius: "15px 15px 0 15px", maxWidth: "80%", lineHeight: "1.5" },
-  botBubble: { backgroundColor: "#fff", color: "#333", padding: "10px 15px", borderRadius: "15px 15px 15px 0", maxWidth: "80%", boxShadow: "0 2px 5px rgba(0,0,0,0.05)", lineHeight: "1.5" },
-  loading: { fontSize: "0.8rem", color: "#888", marginLeft: "10px" },
-  inputArea: { padding: "15px", backgroundColor: "#fff", borderTop: "1px solid #ddd" },
-  suggestArea: { display: "flex", gap: "10px", marginBottom: "10px", overflowX: "auto", paddingBottom: "5px" },
-  suggestBtn: { padding: "5px 12px", borderRadius: "20px", border: "1px solid #0070f3", color: "#0070f3", background: "none", cursor: "pointer", fontSize: "0.8rem", whiteSpace: "nowrap" },
-  form: { display: "flex", gap: "10px" },
-  input: { flex: 1, padding: "12px", borderRadius: "5px", border: "1px solid #ddd", fontSize: "1rem" },
-  sendBtn: { padding: "0 20px", backgroundColor: "#0070f3", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" },
+  container: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f0f2f5", padding: "20px" },
+  card: { backgroundColor: "white", padding: "40px", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", maxWidth: "500px", width: "100%", textAlign: "center" },
+  title: { margin: "0 0 10px 0", color: "#333", fontSize: "1.8rem" },
+  subtitle: { margin: "0 0 30px 0", color: "#666" },
+  menu: { display: "flex", flexDirection: "column", gap: "20px" },
+  primaryButton: { backgroundColor: "#0070f3", color: "white", padding: "20px", borderRadius: "12px", cursor: "pointer", transition: "transform 0.2s", boxShadow: "0 4px 10px rgba(0,112,243,0.3)" },
+  secondaryButton: { backgroundColor: "#333", color: "white", padding: "20px", borderRadius: "12px", cursor: "pointer", transition: "transform 0.2s", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" },
+  btnTitle: { margin: "0 0 5px 0", fontSize: "1.2rem" },
+  btnDesc: { margin: 0, lineHeight: "1.5", fontSize: "0.95rem" },
 };
