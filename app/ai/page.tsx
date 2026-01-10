@@ -101,13 +101,13 @@ export default function Home() {
         <p style={styles.guideText}>よくある質問：</p>
         <div style={styles.suggestArea}>
           <button style={styles.suggestBtn} onClick={() => handleQuickAsk("これまでご経験されている会社の入社理由・転職理由（今回を含め）を差し支えのない範囲で出来る限り詳しく教えてください。")}>
-            経験した会社の入社理由・転職理由
+            入社理由・転職理由
           </button>
           <button style={styles.suggestBtn} onClick={() => handleQuickAsk("次の会社での必要最低条件を教えてください。それは業種・職種・給与という観点もあると思いますし、それ以上に大切にしたいご自身の価値観という部分も入ってくるかと思われます。出来る限りその「背景」も含めて教えていただけますでしょうか。")}>
             次の会社での必要最低条件
           </button>
           <button style={styles.suggestBtn} onClick={() => handleQuickAsk("当社へご興味を持っていただいている点をどういう視点でも結構ですので、教えてください。")}>
-            貴社へ興味を持っている点
+            興味を持っている点
           </button>
         </div>
 
