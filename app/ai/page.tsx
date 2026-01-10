@@ -48,7 +48,7 @@ export default function Home() {
       
       // バックエンドからの改行コード(\n)を<br>に変換（HTML表示用）
       // ※バックエンドが既にHTMLを返している場合は、この置換は不要または調整してください
-      const formattedText = data.text.replace(/\n/g, "<br />");
+      const formattedText = data.text; //.replace(/\n/g, "<br />");
 
       setMessages((prev) => [...prev, { role: "bot", text: formattedText }]);
     } catch (error) {
