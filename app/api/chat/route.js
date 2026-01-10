@@ -69,7 +69,7 @@ export async function POST(req) {
     const genAI = new GoogleGenerativeAI(apiKey);
     
     // 高速で応答精度の高いモデルを使用
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
     // チャット履歴を含めた生成（今回は1ターン完結型で実装しますが、必要なら履歴を持たせます）
     const result = await model.generateContent({
