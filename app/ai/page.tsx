@@ -73,8 +73,8 @@ export default function Home() {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1>AI Interview Avatar</h1>
-        <p style={{fontSize: '0.8rem', opacity: 0.8}}>Yuki Omori's Virtual Agent</p>
+        <h1>AI回答モード（β版）</h1>
+        <p style={{fontSize: '0.8rem', opacity: 0.8}}>大森 裕貴のVirtual Agent</p>
       </header>
 
       <div style={styles.chatArea}>
