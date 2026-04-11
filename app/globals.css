@@ -35,6 +35,40 @@ a {
   text-decoration: none;
 }
 
+/* botBubble内のmarkdownレンダリング用スタイル */
+.bot-bubble h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 12px 0 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #222;
+}
+.bot-bubble h3:first-child {
+  margin-top: 0;
+}
+.bot-bubble p {
+  margin: 6px 0;
+  line-height: 1.7;
+}
+.bot-bubble ul {
+  margin: 4px 0 8px 18px;
+  padding: 0;
+}
+.bot-bubble li {
+  margin: 3px 0;
+  line-height: 1.6;
+}
+.bot-bubble strong {
+  font-weight: bold;
+  color: #0055cc;
+}
+.bot-bubble hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
