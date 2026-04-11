@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, FormEvent } from "react";
+import { marked } from "marked";
 
 // メッセージの型定義
 type Message = {
@@ -10,14 +11,14 @@ type Message = {
 export default function Home() {
   // 初期メッセージを具体的なものに変更
   const [messages, setMessages] = useState<Message[]>([
-    { 
-      role: "bot", 
-      text: "こんにちは！大森裕貴のAIアバターです。<br>職務経歴書と履歴書に基づき、経歴や志望動機についてお答えします。" 
+    {
+      role: "bot",
+      text: "こんにちは！大森裕貴のAIアバターです。<br>職務経歴書と履歴書に基づき、経歴や志望動機についてお答えします。"
     }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // 自動スクロール
@@ -48,7 +49,10 @@ export default function Home() {
         throw new Error(`HTTP ${res.status}: ${data?.text || "不明なエラー"}`);
       }
 
-      setMessages((prev) => [...prev, { role: "bot", text: data.text }]);
+      // markdownをHTMLに変換して表示
+      const formattedText = marked.parse(data.text) as string;
+
+      setMessages((prev) => [...prev, { role: "bot", text: formattedText }]);
     } catch (error: any) {
       console.error(error);
       setMessages((prev) => [...prev, { role: "bot", text: `エラーが発生しました。<br><code style="font-size:0.8rem">${error.message}</code>` }]);
@@ -79,7 +83,7 @@ export default function Home() {
         {messages.map((msg, index) => (
           <div key={index} style={{ ...styles.messageRow, justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
             {/* HTMLタグ（表や太字）を有効にするために dangerouslySetInnerHTML を使用 */}
-            <div 
+            <div
               style={msg.role === "user" ? styles.userBubble : styles.botBubble}
               dangerouslySetInnerHTML={{ __html: msg.text }}
             />
@@ -130,22 +134,22 @@ export default function Home() {
 const styles: { [key: string]: React.CSSProperties } = {
   container: { maxWidth: "600px", margin: "0 auto", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "sans-serif", backgroundColor: "#f4f4f9" },
   header: { padding: "15px", backgroundColor: "#333", color: "#fff", textAlign: "center" },
-  
+
   chatArea: { flex: 1, padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "20px" },
   messageRow: { display: "flex", width: "100%" },
-  
+
   // ユーザーの吹き出し
   userBubble: { backgroundColor: "#0070f3", color: "#fff", padding: "12px 16px", borderRadius: "18px 18px 0 18px", maxWidth: "85%", lineHeight: "1.6", fontSize: "0.95rem", wordBreak: "break-word" },
-  
+
   // ボットの吹き出し（白背景・HTML対応）
   botBubble: { backgroundColor: "#fff", color: "#333", padding: "12px 16px", borderRadius: "18px 18px 18px 0", maxWidth: "90%", boxShadow: "0 2px 5px rgba(0,0,0,0.05)", lineHeight: "1.6", fontSize: "0.95rem", wordBreak: "break-word" },
-  
+
   inputArea: { padding: "15px", backgroundColor: "#fff", borderTop: "1px solid #ddd" },
   guideText: { fontSize: "0.8rem", color: "#666", marginBottom: "8px", fontWeight: "bold" },
-  
+
   suggestArea: { display: "flex", gap: "8px", marginBottom: "12px", overflowX: "auto", paddingBottom: "5px", scrollbarWidth: "none" },
   suggestBtn: { padding: "6px 14px", borderRadius: "20px", border: "1px solid #0070f3", color: "#0070f3", background: "#f0f8ff", cursor: "pointer", fontSize: "0.85rem", whiteSpace: "nowrap", flexShrink: 0 },
-  
+
   form: { display: "flex", gap: "10px" },
   input: { flex: 1, padding: "12px", borderRadius: "8px", border: "1px solid #ddd", fontSize: "1rem", outline: "none" },
   sendBtn: { padding: "0 20px", backgroundColor: "#0070f3", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", transition: "opacity 0.2s" },
