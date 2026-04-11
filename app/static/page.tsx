@@ -100,13 +100,13 @@ export default function StaticPage() {
       <div style={styles.inputArea}>
         <p style={styles.guide}>質問を選択してください：</p>
         <div style={styles.buttonContainer}>
-          <button style={styles.optionBtn} onClick={() => handleAsk("q1", "これまでご経験されている会社の入社理由・転職理由（今回を含め）を差し支えのない範囲で出来る限り詳しく教えてください。")}>
+          <button style={styles.optionBtn} onClick={() => handleAsk("q1", "これまでご経験されている会社の入社理由・転職理由（今回含）を差し支えのない範囲で出来る限り詳しく教えてください。")}>
             1. 経験した会社の入社理由・転職理由
           </button>
-          <button style={styles.optionBtn} onClick={() => handleAsk("q2", "次の会社での必要最低条件を教えてください。それは業種・職種・給与という観点もあると思いますし、それ以上に大切にしたいご自身の価値観という部分も入ってくるかと思われます。出来る限りその「背景」も含めて教えていただけますでしょうか。")}>
+          <button style={styles.optionBtn} onClick={() => handleAsk("q2", "次の会社での必要最低条件を教えてください。業種・職種・給与という観点から、ご自身が大切にしたい価値観なども含め、出来る限りその背景も含めて教えていただけますでしょうか。")}>
             2. 次の会社での必要最低条件
           </button>
-          <button style={styles.optionBtn} onClick={() => handleAsk("q3", "当社へご興味を持っていただいている点をどういう視点でも結構ですので、教えてください。")}>
+          <button style={styles.optionBtn} onClick={() => handleAsk("q3", "当社へご興味を持っていただいている点を教えてください。")}>
             3. 貴社へ興味を持っている点
           </button>
         </div>
