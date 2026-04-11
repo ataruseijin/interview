@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>静的回答モード｜大森 裕貴</title>
+  <style>
+    * { box-sizing: border-box; padding: 0; margin: 0; }
+    body { font-family: sans-serif; background: #f4f4f9; }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 15px;
+      background-color: #2c3e50;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 1.4rem; }
+
+    .chat-area {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message-row { display: flex; }
+    .message-row.user { justify-content: flex-end; }
+    .message-row.bot  { justify-content: flex-start; }
+
+    .bubble {
+      padding: 12px 16px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+    .bubble.user {
+      background: #0070f3;
+      color: #fff;
+      border-radius: 18px 18px 0 18px;
+      max-width: 90%;
+    }
+    .bubble.bot {
+      background: #fff;
+      color: #333;
+      border-radius: 18px 18px 18px 0;
+      max-width: 95%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* テーブルスタイル */
+    .bubble.bot table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      min-width: 500px;
+    }
+    .bubble.bot th, .bubble.bot td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    .bubble.bot thead tr {
+      background-color: #f2f2f2;
+      text-align: left;
+    }
+
+    .input-area {
+      padding: 20px;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      flex-shrink: 0;
+    }
+    .guide {
+      text-align: center;
+      color: #666;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option-btn {
+      padding: 12px;
+      background: #fff;
+      color: #0070f3;
+      border: 1px solid #0070f3;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+    }
+    .option-btn:hover {
+      background: #0070f3;
+      color: #fff;
+    }
+    .option-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>静的回答モード</h1>
+    </header>
+
+    <div class="chat-area" id="chatArea">
+      <div class="message-row bot">
+        <div class="bubble bot">
+          こんにちは！こちらは「静的回答モード」です。<br>
+          私の経歴や志望動機について、事前に用意した回答をご覧いただけます。
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <p class="guide">質問を選択してください：</p>
+      <div class="btn-container">
+        <button class="option-btn" onclick="handleAsk('q1', 'これまでご経験されている会社の入社理由・転職理由（今回含）を差し支えのない範囲で出来る限り詳しく教えてください。')">
+          1. 経験した会社の入社理由・転職理由
+        </button>
+        <button class="option-btn" onclick="handleAsk('q2', '次の会社での必要最低条件を教えてください。業種・職種・給与という観点から、ご自身が大切にしたい価値観なども含め、出来る限りその背景も含めて教えていただけますでしょうか。')">
+          2. 次の会社での必要最低条件
+        </button>
+        <button class="option-btn" onclick="handleAsk('q3', '当社へご興味を持っていただいている点を教えてください。')">
+          3. 貴社へ興味を持っている点
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ANSWERS = {
+      q1: `【経験した会社の入社理由・転職理由】
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20%">会社名</th>
+                <th style="width:40%">入社理由</th>
+                <th style="width:40%">転職理由</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:bold">株式会社ネクサス</td>
+                <td>飲食店のアルバイト経験のみだったため、未経験から営業職に挑戦することで、社会人としての基礎スキルを身につけたいと考え入社しました。</td>
+                <td>取り扱っていた通信サービス（ADSL等）の市場縮小に伴い、将来性への不安を感じました。より需要のある商材や技術に携わりたいと考え、転職を決意しました。</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">NTTマーケティングアクト</td>
+                <td>NTTグループという信頼性と、当時普及し始めていた光ファイバーという成長分野に携われる点に魅力を感じ入社しました。</td>
+                <td>営業活動を通じて社内の技術部門（開通・設定業務）と連携する中で、IT技術そのものへの関心が強くなりました。「ITスキルを磨き、技術で顧客を支える仕事がしたい」と方向性を定めました。</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">有限会社クレオネット</td>
+                <td>当時のスキルでも挑戦できる「キッティング」業務を通じて、ITインフラの基礎やPC等のハードウェア知識を現場で叩き上げたいと考え入社しました。</td>
+                <td>現場での作業に加え、リーダーとして工程管理も経験し、一通りの業務を習得しました。次のステップとして、よりユーザーに近い立場で問題解決を行う「ヘルプデスク・サポート業務」に挑戦したいと考えました。</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">SCSKサービスウェア株式会社</td>
+                <td>複合機サポートの立ち上げメンバー募集があり、これまでのPC・回線知識とリーダー経験が活かせると考え入社しました。その後、より責任ある立場でマネジメントに携わりたいと考え、正社員登用を受けました。</td>
+                <td>17年間でFAQ改善やRPA導入など多くの改善実績を残し、マネージャーとして安定した地位を得ましたが、BPOという立場上、クライアントの決定範囲内での改善に留まることに限界も感じていました。「自社の一員として、システムや業務の根幹から改善したい」という思いが強くなり、転職を決意しました。</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">キャリアリンク株式会社</td>
+                <td>官公庁BPOにおけるDX推進というテーマに社会的意義を感じ、また面接官（現在の上司）の掲げる変革ビジョンに共感し、その下で業務改善スキルを発揮したいと考え入社しました。</td>
+                <td>入社後、実際の業務が定型的な事務処理の管理中心であり、私が強みとする「RPAやCRM、生成AIなどのITツールや、データを活用した改善」とは距離があることを認識しました。今回の求人情報の紹介を受け、貴社でこそこれまでの経験を最大限に活かせると確信し、早期の転職を決意しました。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:10px;font-size:0.8rem;color:#666;">※スマートフォン等の場合は横にスクロールしてご覧ください。</p>`,
+
+      q2: `【次の会社での必要最低条件】<br><br>
+        今回の転職先として求める条件は、決められた業務をただ回すだけでなく、仕組みそのものを改善できる環境です。<br><br>
+        これまでの経歴においても、業務を行う中で見つけた問題点・課題の改善に取り組んできました。そもそもお問い合わせをしなくてもよくなるようなサービスの改善や、必要な問い合わせに出来るだけ早く回答できるようにする効率化によりCXを改善につなげ、事業の売上・利益の拡大に貢献できることが、自分自身の強みであると認識しています。<br><br>
+        そのため、常に課題を発見し、改善施策を考案・実行できる環境で働きたいと考えています。`,
+
+      q3: `【貴社へ興味を持っている点】<br><br>
+        最も魅力を感じているのは、「対応するだけでなく、問い合わせが減る仕組みを作る」というミッションです。これはまさに私がSCSKサービスウェア時代に17年間取り組んできたことそのものです。Oracle Service CloudでのFAQサイト構築、RPAによるメール対応の完全自動化（月間約1万件）、KPI管理体制の整備など、貴社で求められるスキルセットと直接一致していると感じています。<br><br>
+        また、WisdomBaseという教育・試験プラットフォームのSaaSプロダクトを持つ貴社で、カスタマーサポート起点でプロダクト改善にも関われる点に強くやりがいを感じます。これまでBPOとして他社の事業を支援してきた立場から、今度は自社プロダクトを育てる側として携わりたいと考えており、貴社のフェーズが自分のキャリア転換点として最適だと確信しています。`
+    };
+
+    function handleAsk(key, questionText) {
+      const chatArea = document.getElementById('chatArea');
+
+      // ユーザーの吹き出し
+      const userRow = document.createElement('div');
+      userRow.className = 'message-row user';
+      userRow.innerHTML = `<div class="bubble user">${questionText}</div>`;
+      chatArea.appendChild(userRow);
+      scrollToBottom();
+
+      // ボットの回答（600ms後）
+      setTimeout(() => {
+        const botRow = document.createElement('div');
+        botRow.className = 'message-row bot';
+        botRow.innerHTML = `<div class="bubble bot">${ANSWERS[key]}</div>`;
+        chatArea.appendChild(botRow);
+        scrollToBottom();
+      }, 600);
+    }
+
+    function scrollToBottom() {
+      const chatArea = document.getElementById('chatArea');
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+  </script>
+</body>
+</html>
