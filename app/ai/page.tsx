@@ -71,7 +71,7 @@ export default function Home() {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1>AI回答モード（β版）</h1>
+        <h1>AI回答モード（Claude版）</h1>
         <p style={{fontSize: '0.8rem', opacity: 0.8}}>大森 裕貴のVirtual Agent</p>
       </header>
 
