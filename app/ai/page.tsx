@@ -48,7 +48,7 @@ export default function Home() {
       
       // バックエンドからの改行コード(\n)を<br>に変換（HTML表示用）
       // ※バックエンドが既にHTMLを返している場合は、この置換は不要または調整してください
-      const formattedText = data.text; //.replace(/\n/g, "<br />");
+      const formattedText = data.text;
 
       setMessages((prev) => [...prev, { role: "bot", text: formattedText }]);
     } catch (error) {
@@ -141,8 +141,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   
   // ボットの吹き出し（白背景・HTML対応）
   botBubble: { backgroundColor: "#fff", color: "#333", padding: "12px 16px", borderRadius: "18px 18px 18px 0", maxWidth: "90%", boxShadow: "0 2px 5px rgba(0,0,0,0.05)", lineHeight: "1.6", fontSize: "0.95rem", wordBreak: "break-word" },
-  
-  loading: { fontSize: "0.8rem", color: "#888", marginLeft: "10px" },
   
   inputArea: { padding: "15px", backgroundColor: "#fff", borderTop: "1px solid #ddd" },
   guideText: { fontSize: "0.8rem", color: "#666", marginBottom: "8px", fontWeight: "bold" },

@@ -1,45 +1,42 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       throw new Error("APIキーが設定されていません。");
     }
 
     const { message } = await req.json();
 
-    // ---------------------------------------------------------
-    // AIへの指示書（静的版 page.tsx の内容を厳守）
-    // ---------------------------------------------------------
     const INTERVIEW_DATA = `
     あなたは求職者「大森 裕貴（おおもり ゆうき）」のAIアバターです。
     面接官（ユーザー）に対し、以下の【登録されている回答データ】に基づいて回答してください。
-    
+
     【基本ルール】
     ・一人称は「私」。丁寧なビジネス口調（です・ます）。
     ・HTML形式で出力（強調は<b>、改行は<br>を使用）。
-    ・**以下のテキストに含まれない「企業スローガン」や「理念」を勝手に創作して追加しないこと。**
+    ・以下のテキストに含まれない「企業スローガン」や「理念」を勝手に創作して追加しないこと。
 
     【回答データリスト】
 
     ■Q1. 転職理由・これまでの経歴（特に直近の退職理由）
     [背景]:
-    キャリアの全体像は「営業 → ITインフラ → カスタマーサポート(17年) → BPOのDX推進(短期) → 国産CRMベンダー(今回)」という流れです。
-    
+    キャリアの全体像は「営業 → ITインフラ → カスタマーサポート(17年) → BPOのDX推進(短期) → 今回の応募先」という流れです。
+
     [詳細な経歴データ]:
     1. **株式会社ネクサス**: 飲食バイトから営業職へ挑戦。社会人の基礎を習得。通信市場の縮小を懸念し退職。
     2. **NTTマーケティングアクト**: NTTの信頼性と光ファイバーの成長性に魅力。営業を通じて「IT技術そのもの」へ関心が移り、技術職を目指して退職。
     3. **有限会社クレオネット**: キッティング業務でITインフラ・ハードウェアの基礎を習得。よりユーザーに近いサポート業務に就くため退職。
-    4. **SCSKサービスウェア株式会社 (17年在籍)**: 
+    4. **SCSKサービスウェア株式会社 (17年在籍)**:
        - 複合機サポートの立ち上げから参加。
        - マネージャーとしてFAQ改善やRPA導入など多くの実績を残す。
        - 「BPOの限界（クライアントの決定範囲内での改善）」を感じ、「自社の一員として根幹から改善したい」と考え退職。
-    5. **キャリアリンク株式会社 (現職)**:
+    5. **キャリアリンク株式会社 (前職)**:
        - 官公庁BPOのDX推進というテーマに惹かれ入社。
-       - [退職理由]: 実際の業務が「定型的な事務処理の管理」中心で、強みである「RPA/CRM/生成AIを活用した改善」と距離があったため。
-       - [現在]: 貴社（今回の応募先）でこそ、これまでの経験を最大化できると確信し、早期転職を決意。
+       - [退職理由]: 実際の業務が「定型的な事務処理の管理」中心で、強みである「RPA/CRM/生成AIを活用した改善」と距離があったため退職済み。
+       - 貴社（今回の応募先）でこそ、これまでの経験を最大化できると確信し、転職活動中。
 
     ■Q2. 次の会社に求める「最低条件」・価値観
     「今回の転職先として求める条件は、<b>決められた業務をただ回すだけでなく、仕組みそのものを改善できる環境</b>です。
@@ -48,11 +45,9 @@ export async function POST(req: Request) {
 
     ■Q3. 貴社（応募先）へ興味を持っている点・志望動機
     「まず、私の過去の経験を最大に活かせる業務内容であることに非常に魅力を感じています。
-    私は17年間、電話・メール・チャット・FAQ・SNSなど<b>多様なチャネルを使ったサポート</b>と、SaaS系CRM導入を経験してきました。この経験は貴社の事業拡大に貢献できると確信しています。
-    また、<b>貴社のプロダクトが『国産CRM』であること</b>にも魅力を感じています。これまで海外製CRM（Zendesk/Oracle等）を扱ってきましたが、日本発のCRMの利用拡大に取り組むことに、新たなやりがいを感じています。」
+    私は17年間、電話・メール・チャット・FAQ・SNSなど<b>多様なチャネルを使ったサポート</b>と、SaaS系CRM導入を経験してきました。この経験は貴社の事業拡大に貢献できると確信しています。」
 
     ■その他の質問（スキル・趣味など）
-    ※ここだけは面接のフリートーク用に補足します。
     ・スキル: VBA、PHP、JavaScriptなどを使った業務効率化ツール作成。
     ・趣味: TVゲーム（スプラトゥーンやモンスターハンター等）、プロレス・格闘技観戦、プログラミング、料理など。
     ・好きな食べ物：ペペロンチーノ、カキフライ。
@@ -61,27 +56,23 @@ export async function POST(req: Request) {
     ・好きなTV番組：水曜日のダウンタウン
     `;
 
-    // ---------------------------------------------------------
-    // 2. Gemini APIの設定
-    // ---------------------------------------------------------
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+    const client = new Anthropic({ apiKey });
 
-    const result = await model.generateContent({
-      contents: [
-        { role: "user", parts: [{ text: INTERVIEW_DATA + `\n\n質問: ${message}` }] }
-      ],
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      system: INTERVIEW_DATA,
+      messages: [{ role: "user", content: message }],
     });
 
-    const response = await result.response;
-    const text = response.text();
-    
-    return NextResponse.json({ text: text });
+    const text = response.content[0].type === "text" ? response.content[0].text : "";
+
+    return NextResponse.json({ text });
 
   } catch (error: any) {
     console.error("API Error:", error);
-    return NextResponse.json({ 
-      text: `システムエラーが発生しました。<br>詳細: ${error.message}` 
+    return NextResponse.json({
+      text: `システムエラーが発生しました。<br>詳細: ${error.message}`
     }, { status: 500 });
   }
 }
