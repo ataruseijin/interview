@@ -9,24 +9,24 @@ export default function LandingPage() {
         <p style={styles.subtitle}>応募者：大森　裕貴</p>
         
         <div style={styles.menu}>
-          {/* 静的版へのリンク */}
-          <Link href="/static" style={{ textDecoration: 'none' }}>
+          {/* AI版へのリンク */}
+          <Link href="/ai" style={{ textDecoration: 'none' }}>
             <div style={styles.primaryButton}>
-              <h2 style={styles.btnTitle}>📄 静的回答モード</h2>
+              <h2 style={styles.btnTitle}>🤖 Claude版 AI回答モード</h2>
               <p style={styles.btnDesc}>
-                事前に用意した回答をチャット形式で閲覧できます。<br/>
-                <span style={{fontSize: '0.85em', opacity: 0.9}}>※回答内容を正確に確認したい方はこちら</span>
+                Claudeを用いた対話デモです。<br/>
+                <span style={{fontSize: '0.85em', opacity: 0.9}}>※自由に質問していただけます</span>
               </p>
             </div>
           </Link>
 
-          {/* AI版へのリンク */}
-          <Link href="/ai" style={{ textDecoration: 'none' }}>
+          {/* 静的版へのリンク */}
+          <Link href="/static" style={{ textDecoration: 'none' }}>
             <div style={styles.secondaryButton}>
-              <h2 style={styles.btnTitle}>🤖 生成AIモード (Beta)</h2>
+              <h2 style={styles.btnTitle}>📄 静的回答モード</h2>
               <p style={styles.btnDesc}>
-                生成AIを用いた対話デモです。<br/>
-                <span style={{fontSize: '0.85em', opacity: 0.9}}>※技術デモとしてご覧ください</span>
+                事前に用意した回答をチャット形式で閲覧できます。<br/>
+                <span style={{fontSize: '0.85em', opacity: 0.9}}>※回答内容を正確に確認したい方はこちら</span>
               </p>
             </div>
           </Link>
