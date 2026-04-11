@@ -84,6 +84,7 @@ export default function Home() {
           <div key={index} style={{ ...styles.messageRow, justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
             {/* HTMLタグ（表や太字）を有効にするために dangerouslySetInnerHTML を使用 */}
             <div
+              className={msg.role === "bot" ? "bot-bubble" : undefined}
               style={msg.role === "user" ? styles.userBubble : styles.botBubble}
               dangerouslySetInnerHTML={{ __html: msg.text }}
             />
