@@ -41,19 +41,17 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
       });
-      
-      if (!res.ok) throw new Error("API Error");
 
       const data = await res.json();
-      
-      // バックエンドからの改行コード(\n)を<br>に変換（HTML表示用）
-      // ※バックエンドが既にHTMLを返している場合は、この置換は不要または調整してください
-      const formattedText = data.text;
 
-      setMessages((prev) => [...prev, { role: "bot", text: formattedText }]);
-    } catch (error) {
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${data?.text || "不明なエラー"}`);
+      }
+
+      setMessages((prev) => [...prev, { role: "bot", text: data.text }]);
+    } catch (error: any) {
       console.error(error);
-      setMessages((prev) => [...prev, { role: "bot", text: "すみません、エラーが発生しました。" }]);
+      setMessages((prev) => [...prev, { role: "bot", text: `エラーが発生しました。<br><code style="font-size:0.8rem">${error.message}</code>` }]);
     } finally {
       setIsLoading(false);
     }
